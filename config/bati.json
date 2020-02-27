@@ -1,0 +1,42 @@
+{
+    "tableConfig":{
+        "COMMUNE_id":{
+            "type":"FeatureCollection",
+            "table":"edi_commune",
+            "geomField": { "name":"geom" }, 
+            "fields":[
+                {"db":"millesime", "functions":["addMillesime"], "pgtype": "smallint"},
+                {"db":"commune_id", "json":"IDU_id", "functions":["addDep"], "pgtype": "varchar(6)"},
+                {"db":"label", "json":"TEX2_id", "pgtype": "varchar(100)"},            
+                {"db":"create_date", "json":"createDate", "type":"date", "functions":["toDate"], "pgtype":"date"},
+                {"db":"update_date", "json":"updateDate", "functions":["toDate"], "pgtype":"date"},
+                {"db":"type_update", "json":"type_update", "functions":["toInt"], "pgtype": "smallint"},
+                {"db":"peren_maj", "json":"peren_maj", "functions":["toInt"], "pgtype": "smallint"}
+            ],
+            "pgCONSTRAINT": [ "CONSTRAINT edi_commune_pk PRIMARY KEY (millesime,commune_id)"]
+        },
+        "BATIMENT_id":{
+            "type":"FeatureCollection",
+            "table":"edi_batiment",
+            "geomField": { "name":"geom" },
+            "insertGid":true,
+            "hashGeom": true,
+            "fields":[
+                {"db":"millesime", "functions":["addMillesime"],  "pgtype": "smallint"},
+                {"db":"object_id", "json":"_id", "pgtype": "varchar(30)", "functions":["addDep"]},
+                {"db":"dur", "json":"DUR_id", "functions":["toInt"], "pgtype": "smallint"},
+                {"db":"create_date", "json":"createDate", "functions":["toDate"], "pgtype":"date"},
+                {"db":"update_date", "json":"updateDate", "functions":["toDate"], "pgtype":"date"},
+                {"db":"type_update", "json":"type_update", "functions":["toInt"], "pgtype": "smallint"},
+                {"db":"peren_maj", "json":"peren_maj", "functions":["toInt"], "pgtype": "smallint"},
+                {"db":"commune_id", "const": "commune_id", "functions":["addDep"], "pgtype": "varchar(6)"}
+            ],
+            "pgCONSTRAINT": [ "CONSTRAINT edi_batiment_pk PRIMARY KEY (gid)",
+                              "CONSTRAINT uq_geom UNIQUE (millesime,geomhash)"],
+            "pgFkCONSTRAINT": [
+            "ALTER TABLE $schema$.edi_batiment DROP CONSTRAINT IF EXISTS edi_batiment_fk;",
+            "ALTER TABLE $schema$.edi_batiment ADD CONSTRAINT edi_batiment_fk FOREIGN KEY (commune_id, millesime) REFERENCES $schema$.edi_commune (commune_id, millesime) MATCH FULL ON DELETE RESTRICT ON UPDATE CASCADE;"
+            ]
+        }
+    }
+}
