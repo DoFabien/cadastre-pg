@@ -2,6 +2,8 @@
 
 Outil Rust performant pour importer le cadastre EDIGEO vers PostGIS avec support du versioning temporel.
 
+> **Note** : Une version Node.js est disponible sur la branche [`js`](../../tree/js). La version Rust est **3.5x plus rapide** et consomme beaucoup moins de mémoire. La décompression des archives `.tar.bz2` représente ~50% du temps total de traitement.
+
 ## Fonctionnalités
 
 - Import EDIGEO → PostGIS avec reprojection à la volée
@@ -45,6 +47,7 @@ cadastre-pg import [OPTIONS] --path <PATH> --date <YYYY-MM>
 | `--user` | Utilisateur | `$PGUSER` / `postgres` |
 | `--password` | Mot de passe | `$PGPASSWORD` |
 | `--port` | Port | `$PGPORT` / `5432` |
+| `--ssl` | Mode SSL : `disable`, `prefer`, `require` | `$PGSSLMODE` / `disable` |
 
 ### Exemple
 
@@ -120,7 +123,7 @@ Chaque table créée contient :
 
 La connexion PostgreSQL peut être configurée via :
 
-- `PGHOST`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`, `PGPORT`
+- `PGHOST`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`, `PGPORT`, `PGSSLMODE`
 
 Ou via un fichier `.env` à la racine du projet.
 

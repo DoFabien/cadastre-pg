@@ -23,6 +23,9 @@ tracing-subscriber.workspace = true
 tokio.workspace = true
 tokio-postgres.workspace = true
 deadpool-postgres.workspace = true
+tokio-postgres-rustls = "0.12"
+rustls = { version = "0.23", default-features = false, features = ["ring", "std"] }
+webpki-roots = "0.26"
 proj = { workspace = true, optional = true }
 blake3.workspace = true
 bytes.workspace = true

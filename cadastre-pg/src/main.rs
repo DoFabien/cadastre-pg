@@ -69,6 +69,7 @@ async fn main() -> Result<()> {
             user,
             password,
             port,
+            ssl,
             jobs,
         } => {
             info!(path = %path.display(), date = %date, "Importing EDIGEO data");
@@ -88,6 +89,7 @@ async fn main() -> Result<()> {
                 user,
                 password,
                 port,
+                ssl,
                 jobs,
             )
             .await?;

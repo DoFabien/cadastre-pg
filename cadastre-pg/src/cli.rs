@@ -88,6 +88,10 @@ pub enum Commands {
         /// PostgreSQL port (défaut : env PGPORT / 5432)
         #[arg(long)]
         port: Option<u16>,
+
+        /// SSL mode: disable, prefer, require (défaut : env PGSSLMODE / disable)
+        #[arg(long)]
+        ssl: Option<String>,
     },
 
     /// Export EDIGEO to GeoJSON (no database required)
@@ -123,6 +127,7 @@ pub async fn cmd_import(
     user: Option<String>,
     password: Option<String>,
     port: Option<u16>,
+    ssl: Option<String>,
     jobs: Option<usize>,
 ) -> Result<()> {
     // Valider le format de date
@@ -179,10 +184,10 @@ pub async fn cmd_import(
 
     // Connecter à PostgreSQL
     let mut db_config = crate::export::pool::DatabaseConfig::from_env();
-    apply_database_overrides(&mut db_config, host, database, user, password, port);
+    apply_database_overrides(&mut db_config, host, database, user, password, port, ssl);
     println!(
-        "Database: {}@{}:{}/{}",
-        db_config.user, db_config.host, db_config.port, db_config.dbname
+        "Database: {}@{}:{}/{} (SSL: {:?})",
+        db_config.user, db_config.host, db_config.port, db_config.dbname, db_config.ssl_mode
     );
 
     let pool = crate::export::pool::create_pool(&db_config).await?;
@@ -715,6 +720,7 @@ fn apply_database_overrides(
     user: Option<String>,
     password: Option<String>,
     port: Option<u16>,
+    ssl: Option<String>,
 ) {
     if let Some(host) = host {
         config.host = host;
@@ -730,6 +736,11 @@ fn apply_database_overrides(
     }
     if let Some(port) = port {
         config.port = port;
+    }
+    if let Some(ssl) = ssl {
+        if let Ok(mode) = ssl.parse() {
+            config.ssl_mode = mode;
+        }
     }
 }
 
