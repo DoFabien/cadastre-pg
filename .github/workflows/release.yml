@@ -19,9 +19,6 @@ jobs:
           - target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
             name: cadastre-pg-linux-x86_64
-          - target: x86_64-apple-darwin
-            os: macos-13
-            name: cadastre-pg-macos-x86_64
           - target: aarch64-apple-darwin
             os: macos-latest
             name: cadastre-pg-macos-arm64
@@ -45,13 +42,8 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install proj
 
-      - name: Build (with reproject)
-        if: runner.os != 'Windows'
+      - name: Build
         run: cargo build --release --target ${{ matrix.target }} -p cadastre-pg
-
-      - name: Build (without reproject - Windows)
-        if: runner.os == 'Windows'
-        run: cargo build --release --target ${{ matrix.target }} -p cadastre-pg --no-default-features
 
       - name: Package (Unix)
         if: matrix.os != 'windows-latest'
