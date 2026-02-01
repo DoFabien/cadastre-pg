@@ -21,93 +21,95 @@ use rayon::prelude::*;
 use tokio::sync::mpsc;
 use tracing::{info, warn};
 
+/// Sous-commande optionnelle (to-geojson uniquement, PostGIS est le défaut)
 #[derive(Subcommand)]
 pub enum Commands {
-    /// Import EDIGEO data into PostGIS with temporal versioning
-    Import {
-        /// Path to EDIGEO archive (.tar.bz2) or directory
+    /// Exporter EDIGEO vers GeoJSON (sans base de données)
+    ToGeojson {
+        /// Chemin vers l'archive EDIGEO (.tar.bz2) ou répertoire
         #[arg(short, long)]
         path: PathBuf,
 
-        /// Date of the millésime (YYYY-MM format, e.g., 2024-01)
-        #[arg(short, long)]
-        date: String,
-
-        /// Target PostgreSQL schema
-        #[arg(long, default_value = "cadastre")]
-        schema: String,
-
-        /// Config preset name (full/light/bati) or path to a JSON config
-        #[arg(long, default_value = "full")]
-        config: String,
-
-        /// Drop schema before import
-        #[arg(long)]
-        drop_schema: bool,
-
-        /// Drop final tables before import (sans supprimer le schema)
-        #[arg(long)]
-        drop_table: bool,
-
-        /// Skip index creation at the end of the import (faster ingest; create later if needed)
-        #[arg(long)]
-        skip_indexes: bool,
-
-        /// Target SRID for PostGIS tables (default: 4326 / WGS84)
-        #[arg(long, default_value_t = 4326)]
-        srid: u32,
-
-        /// Coordinate precision (decimal places). Default: 7 for SRID 4326 (~1cm), 2 for metric SRIDs (~1cm)
-        #[arg(long)]
-        precision: Option<u8>,
-
-        /// Departement code override (ex: 38, 2A) ou "fromFile"
-        #[arg(long)]
-        dep: Option<String>,
-
-        /// Maximum number of archives processed concurrently
-        #[arg(long, alias = "threads")]
-        jobs: Option<usize>,
-
-        /// PostgreSQL host (défaut : env PGHOST / localhost)
-        #[arg(long)]
-        host: Option<String>,
-
-        /// PostgreSQL database name (défaut : env PGDATABASE / cadastre)
-        #[arg(long)]
-        database: Option<String>,
-
-        /// PostgreSQL user (défaut : env PGUSER / postgres)
-        #[arg(long)]
-        user: Option<String>,
-
-        /// PostgreSQL password (défaut : env PGPASSWORD)
-        #[arg(long)]
-        password: Option<String>,
-
-        /// PostgreSQL port (défaut : env PGPORT / 5432)
-        #[arg(long)]
-        port: Option<u16>,
-
-        /// SSL mode: disable, prefer, require (défaut : env PGSSLMODE / disable)
-        #[arg(long)]
-        ssl: Option<String>,
-    },
-
-    /// Export EDIGEO to GeoJSON (no database required)
-    Export {
-        /// Path to EDIGEO archive or directory
-        #[arg(short, long)]
-        path: PathBuf,
-
-        /// Output directory for GeoJSON files
+        /// Répertoire de sortie pour les fichiers GeoJSON
         #[arg(short, long)]
         output: PathBuf,
 
-        /// Target SRID for reprojection (e.g., 4326 for WGS84)
+        /// SRID cible pour la reprojection (ex: 4326 pour WGS84)
         #[arg(long)]
         srid: Option<u32>,
     },
+}
+
+/// Arguments pour l'export vers PostGIS (commande par défaut)
+#[derive(clap::Args)]
+pub struct PostgisArgs {
+    /// Chemin vers l'archive EDIGEO (.tar.bz2) ou répertoire
+    #[arg(short, long)]
+    pub path: PathBuf,
+
+    /// Date du millésime (format YYYY-MM, ex: 2024-01)
+    #[arg(short, long)]
+    pub date: String,
+
+    /// Schéma PostgreSQL cible
+    #[arg(long, default_value = "cadastre")]
+    pub schema: String,
+
+    /// Preset de config (full/light/bati) ou chemin vers un fichier JSON
+    #[arg(long, default_value = "full")]
+    pub config: String,
+
+    /// Supprimer le schéma avant l'import
+    #[arg(long)]
+    pub drop_schema: bool,
+
+    /// Supprimer les tables avant l'import (sans supprimer le schéma)
+    #[arg(long)]
+    pub drop_table: bool,
+
+    /// Ne pas créer les index à la fin de l'import
+    #[arg(long)]
+    pub skip_indexes: bool,
+
+    /// SRID cible pour les tables PostGIS (défaut: 4326 / WGS84)
+    #[arg(long, default_value_t = 4326)]
+    pub srid: u32,
+
+    /// Précision des coordonnées (décimales). Défaut: 7 pour SRID 4326 (~1cm), 2 pour SRID métrique
+    #[arg(long)]
+    pub precision: Option<u8>,
+
+    /// Code département (ex: 38, 2A) ou "fromFile" pour lire depuis l'archive
+    #[arg(long)]
+    pub dep: Option<String>,
+
+    /// Nombre maximum d'archives traitées en parallèle
+    #[arg(long, alias = "threads")]
+    pub jobs: Option<usize>,
+
+    /// Hôte PostgreSQL (défaut: $PGHOST ou localhost)
+    #[arg(long)]
+    pub host: Option<String>,
+
+    /// Nom de la base PostgreSQL (défaut: $PGDATABASE ou cadastre)
+    #[arg(long)]
+    pub database: Option<String>,
+
+    /// Utilisateur PostgreSQL (défaut: $PGUSER ou postgres)
+    #[arg(long)]
+    pub user: Option<String>,
+
+    /// Mot de passe PostgreSQL (défaut: $PGPASSWORD)
+    #[arg(long)]
+    pub password: Option<String>,
+
+    /// Port PostgreSQL (défaut: $PGPORT ou 5432)
+    #[arg(long)]
+    pub port: Option<u16>,
+
+    /// Mode SSL: disable, prefer, require (défaut: $PGSSLMODE ou disable)
+    #[arg(long)]
+    pub ssl: Option<String>,
 }
 
 /// Exécute la commande import

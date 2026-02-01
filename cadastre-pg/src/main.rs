@@ -23,23 +23,31 @@ mod config;
 mod export;
 mod versioning;
 
-use cli::Commands;
+use cli::{Commands, PostgisArgs};
 
-/// Import EDIGEO cadastral data to PostGIS with temporal versioning
+/// Exporter les données cadastrales EDIGEO vers PostGIS ou GeoJSON
 #[derive(Parser)]
 #[command(name = "cadastre-pg")]
-#[command(author, version, about, long_about = None)]
+#[command(author, version)]
+#[command(about = "Exporter les données cadastrales EDIGEO vers PostGIS (défaut) ou GeoJSON")]
+#[command(long_about = "Outil performant pour exporter le cadastre EDIGEO vers PostGIS avec versioning temporel.\n\nPar défaut, exporte vers PostGIS. Utilisez 'to-geojson' pour exporter en GeoJSON.")]
+#[command(args_conflicts_with_subcommands = true)]
 struct Cli {
-    /// Increase verbosity (-v, -vv, -vvv)
-    #[arg(short, long, action = clap::ArgAction::Count)]
+    /// Augmenter la verbosité (-v, -vv, -vvv)
+    #[arg(short, long, action = clap::ArgAction::Count, global = true)]
     verbose: u8,
 
-    /// Decrease verbosity (quiet mode)
-    #[arg(short, long)]
+    /// Mode silencieux
+    #[arg(short, long, global = true)]
     quiet: bool,
 
+    /// Sous-commande (défaut: export vers PostGIS)
     #[command(subcommand)]
-    command: Commands,
+    command: Option<Commands>,
+
+    /// Arguments pour l'export PostGIS (commande par défaut)
+    #[command(flatten)]
+    postgis: Option<PostgisArgs>,
 }
 
 #[tokio::main]
@@ -53,50 +61,34 @@ async fn main() -> Result<()> {
     init_logging(cli.verbose, cli.quiet);
 
     match cli.command {
-        Commands::Import {
-            path,
-            date,
-            schema,
-            config,
-            drop_schema,
-            drop_table,
-            skip_indexes,
-            srid,
-            precision,
-            dep,
-            host,
-            database,
-            user,
-            password,
-            port,
-            ssl,
-            jobs,
-        } => {
-            info!(path = %path.display(), date = %date, "Importing EDIGEO data");
+        Some(Commands::ToGeojson { path, output, srid }) => {
+            info!(path = %path.display(), output = %output.display(), srid = ?srid, "Export vers GeoJSON");
+            cli::cmd_export(&path, &output, srid).await?;
+        }
+        None => {
+            // Commande par défaut: PostGIS
+            let args = cli.postgis.expect("Arguments PostGIS requis (--path et --date)");
+            info!(path = %args.path.display(), date = %args.date, "Export vers PostGIS");
             cli::cmd_import(
-                &path,
-                &date,
-                &schema,
-                &config,
-                drop_schema,
-                drop_table,
-                skip_indexes,
-                srid,
-                precision,
-                dep,
-                host,
-                database,
-                user,
-                password,
-                port,
-                ssl,
-                jobs,
+                &args.path,
+                &args.date,
+                &args.schema,
+                &args.config,
+                args.drop_schema,
+                args.drop_table,
+                args.skip_indexes,
+                args.srid,
+                args.precision,
+                args.dep,
+                args.host,
+                args.database,
+                args.user,
+                args.password,
+                args.port,
+                args.ssl,
+                args.jobs,
             )
             .await?;
-        }
-        Commands::Export { path, output, srid } => {
-            info!(path = %path.display(), output = %output.display(), srid = ?srid, "Exporting to GeoJSON");
-            cli::cmd_export(&path, &output, srid).await?;
         }
     }
 

@@ -47,24 +47,32 @@ cargo build --release --no-default-features
 
 ## Usage
 
+### Export vers PostGIS (défaut)
+
 ```sh
-cadastre-pg import [OPTIONS] --path <PATH> --date <YYYY-MM>
+cadastre-pg -p <PATH> -d <YYYY-MM> [OPTIONS]
 ```
 
-### Options
+### Export vers GeoJSON
+
+```sh
+cadastre-pg to-geojson -p <PATH> -o <OUTPUT> [OPTIONS]
+```
+
+### Options PostGIS
 
 | Option | Description | Défaut |
 |--------|-------------|--------|
-| `--path`, `-p` | Chemin du répertoire ou archive `.tar.bz2` | **requis** |
-| `--date`, `-d` | Date du millésime (format `YYYY-MM`) | **requis** |
+| `-p`, `--path` | Chemin du répertoire ou archive `.tar.bz2` | **requis** |
+| `-d`, `--date` | Date du millésime (format `YYYY-MM`) | **requis** |
 | `--schema` | Schéma PostgreSQL cible | `cadastre` |
 | `--config` | Preset (`full`/`light`/`bati`) ou chemin JSON | `full` |
 | `--srid` | SRID cible | `4326` |
 | `--precision` | Précision des coordonnées (décimales) | `7` (4326) / `2` (métrique) |
 | `--dep` | Code département (`38`, `2A`) ou `fromFile` | auto |
 | `--jobs` | Nombre de threads | max CPU |
-| `--drop-schema` | Supprimer le schéma avant import | `false` |
-| `--drop-table` | Supprimer les tables avant import | `false` |
+| `--drop-schema` | Supprimer le schéma avant export | `false` |
+| `--drop-table` | Supprimer les tables avant export | `false` |
 | `--skip-indexes` | Ne pas créer les index | `false` |
 | `--host` | Hôte PostgreSQL | `$PGHOST` / `localhost` |
 | `--database` | Base de données | `$PGDATABASE` / `cadastre` |
@@ -76,17 +84,17 @@ cadastre-pg import [OPTIONS] --path <PATH> --date <YYYY-MM>
 ### Exemple
 
 ```sh
-# Premier import (crée le schéma)
-cadastre-pg import \
-  --path /data/edigeo/cadastre-dep38-2025-04 \
-  --date 2025-04 \
+# Premier export (crée le schéma)
+cadastre-pg \
+  -p /data/edigeo/cadastre-dep38-2025-04 \
+  -d 2025-04 \
   --schema cadastre \
   --drop-schema
 
-# Import incrémental (trimestre suivant)
-cadastre-pg import \
-  --path /data/edigeo/cadastre-dep38-2025-09 \
-  --date 2025-09 \
+# Export incrémental (trimestre suivant)
+cadastre-pg \
+  -p /data/edigeo/cadastre-dep38-2025-09 \
+  -d 2025-09 \
   --schema cadastre
 ```
 
@@ -114,11 +122,11 @@ Pour une configuration personnalisée, créer un fichier JSON :
 }
 ```
 
-## Import incrémental
+## Export incrémental
 
-L'outil optimise les imports successifs :
+L'outil optimise les exports successifs :
 
-1. **Skip par checksum d'archive** : si une archive `.tar.bz2` a le même checksum qu'un import précédent, elle est ignorée (pas de décompression ni parsing)
+1. **Skip par checksum d'archive** : si une archive `.tar.bz2` a le même checksum qu'un export précédent, elle est ignorée (pas de décompression ni parsing)
 
 2. **Skip par hash de géométrie** : les features dont la géométrie existe déjà en base sont ignorées
 
@@ -126,9 +134,9 @@ L'outil optimise les imports successifs :
 
 | Scénario | Archives traitées | Temps |
 |----------|-------------------|-------|
-| Import initial (553 archives) | 553 | ~9s |
-| Import incrémental (~24% changé) | ~130 | ~3.7s |
-| Re-import identique | 0 | **77ms** |
+| Export initial (553 archives) | 553 | ~9s |
+| Export incrémental (~24% changé) | ~130 | ~3.7s |
+| Re-export identique | 0 | **77ms** |
 
 ## Structure des tables
 
@@ -153,10 +161,10 @@ Ou via un fichier `.env` à la racine du projet.
 
 ## Export GeoJSON
 
-Pour exporter sans base de données :
+Pour exporter vers GeoJSON (sans base de données) :
 
 ```sh
-cadastre-pg export --path /data/archive.tar.bz2 --output /data/geojson/
+cadastre-pg to-geojson -p /data/archive.tar.bz2 -o /data/geojson/
 ```
 
 ## Licence
