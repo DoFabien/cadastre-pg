@@ -1,4 +1,26 @@
+# Rust build artifacts
+/target/
 
-node_modules/
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
 
-package-lock.json
+# Criterion benchmark output
+criterion/
+
+# Test coverage
+*.profraw
+*.profdata
+coverage/
+
+# macOS
+.DS_Store
+
+# Debug files
+*.pdb
+
+# Environment
+.env
+perf.data*

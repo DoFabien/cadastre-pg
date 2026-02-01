@@ -1,0 +1,10 @@
+{
+  "BATIMENT_id": {
+    "table": "edi_batiments",
+    "hash_geom": false,
+    "fields": [
+      { "source": "IDU", "target": "id" },
+      { "source": "IDU_PARCELLE", "target": "parcelle_id" }
+    ]
+  }
+}

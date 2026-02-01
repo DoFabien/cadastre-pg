@@ -1,0 +1,29 @@
+{
+  "PARCELLE_id": {
+    "table": "edi_parcelles",
+    "hash_geom": true,
+    "fields": [
+      { "source": "IDU", "target": "id" },
+      { "source": "TEX", "target": "numero" },
+      { "source": "IDU_COMMUNE", "target": "commune_id" },
+      { "source": "IDU_SECTION", "target": "section_id" }
+    ]
+  },
+  "SECTION_id": {
+    "table": "edi_sections",
+    "hash_geom": true,
+    "fields": [
+      { "source": "IDU", "target": "id" },
+      { "source": "TEX", "target": "code" },
+      { "source": "IDU_COMMUNE", "target": "commune_id" }
+    ]
+  },
+  "COMMUNE_id": {
+    "table": "edi_communes",
+    "hash_geom": true,
+    "fields": [
+      { "source": "IDU", "target": "id" },
+      { "source": "TEX", "target": "nom" }
+    ]
+  }
+}

@@ -1,0 +1,44 @@
+[package]
+name = "cadastre-pg"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Import EDIGEO cadastral data to PostGIS with temporal versioning"
+
+[features]
+default = ["reproject"]
+reproject = ["dep:proj"]
+
+[dependencies]
+edigeo = { path = "../edigeo" }
+geo.workspace = true
+geojson.workspace = true
+geozero.workspace = true
+wkb.workspace = true
+anyhow.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+tokio.workspace = true
+tokio-postgres.workspace = true
+deadpool-postgres.workspace = true
+proj = { workspace = true, optional = true }
+blake3.workspace = true
+bytes.workspace = true
+futures.workspace = true
+hex.workspace = true
+rayon.workspace = true
+clap.workspace = true
+dotenvy.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+regex.workspace = true
+
+[dev-dependencies]
+criterion.workspace = true
+glob.workspace = true
+
+[[bench]]
+name = "import"
+harness = false

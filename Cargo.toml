@@ -1,0 +1,73 @@
+[workspace]
+resolver = "2"
+members = ["edigeo", "cadastre-pg"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Fabien"]
+license = "MIT"
+repository = "https://github.com/DoFabien/cadastre-pg"
+
+[workspace.dependencies]
+# Géométrie
+geo = "0.28"
+geojson = "0.24"
+geozero = { version = "0.14", features = ["with-geo", "with-geojson", "with-wkb"] }
+wkb = "0.7"
+
+# Erreurs
+thiserror = "1"
+anyhow = "1"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Parsing SIMD
+memchr = "2"
+simdutf8 = "0.1"
+fast-float = "0.2"
+
+# Archives
+bzip2 = "0.4"
+tar = "0.4"
+
+# Encodage
+encoding_rs = "0.8"
+
+# Async
+tokio = { version = "1", features = ["full"] }
+tokio-postgres = "0.7"
+deadpool-postgres = "0.14"
+futures = "0.3"
+bytes = "1"
+
+# Reprojection
+proj = "0.27"
+
+# Hash
+blake3 = "1"
+hex = "0.4"
+
+# Parallélisation
+rayon = "1"
+
+# CLI
+clap = { version = "4", features = ["derive"] }
+
+# Env
+dotenvy = "0.15"
+
+# Sérialisation
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Regex
+regex = "1"
+
+# Dev
+criterion = { version = "0.5", features = ["async_tokio"] }
+glob = "0.3"
+
+
