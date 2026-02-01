@@ -42,8 +42,13 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install proj
 
-      - name: Build
+      - name: Build (Linux/macOS with proj)
+        if: runner.os != 'Windows'
         run: cargo build --release --target ${{ matrix.target }} -p cadastre-pg
+
+      - name: Build (Windows with reproject_lite only)
+        if: runner.os == 'Windows'
+        run: cargo build --release --target ${{ matrix.target }} -p cadastre-pg --no-default-features
 
       - name: Package (Unix)
         if: matrix.os != 'windows-latest'

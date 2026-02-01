@@ -34,7 +34,7 @@ curl -L https://github.com/DoFabien/cadastre-pg/releases/latest/download/cadastr
 
 Télécharger le `.zip` depuis les [Releases](../../releases) et extraire `cadastre-pg.exe`.
 
-> Tous les binaires incluent la reprojection légère (pure Rust) pour les projections cadastrales françaises.
+> Tous les binaires incluent la reprojection légère (pure Rust) pour le cadastre français : Lambert 93, UTM DOM → WGS84/Web Mercator.
 
 ### Compilation depuis les sources
 
