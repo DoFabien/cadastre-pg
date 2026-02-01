@@ -1,0 +1,102 @@
+{
+  "COMMUNE_id": {
+    "table": "edi_communes",
+    "hash_geom": true,
+    "fields": [
+      { "source": "IDU", "target": "id", "prefix_dep": true },
+      { "source": "TEX2", "target": "nom" }
+    ]
+  },
+  "SECTION_id": {
+    "table": "edi_sections",
+    "hash_geom": true,
+    "fields": [
+      { "source": "IDU", "target": "id", "prefix_dep": true },
+      { "source": "TEX", "target": "code" },
+      { "source": "IDU_COMMUNE", "target": "commune_id", "prefix_dep": true }
+    ]
+  },
+  "SUBDSECT_id": {
+    "table": "edi_subsections",
+    "hash_geom": true,
+    "fields": [
+      { "source": "IDU", "target": "id", "prefix_dep": true },
+      { "source": "COPL", "target": "copl" },
+      { "source": "DEDI", "target": "dedi" },
+      { "source": "DIS", "target": "dis" },
+      { "source": "DRED", "target": "dred" },
+      { "source": "EOR", "target": "eor", "data_type": "integer" },
+      { "source": "ICL", "target": "icl", "data_type": "float" },
+      { "source": "INP", "target": "inp" },
+      { "source": "QUPL", "target": "qupl" },
+      { "source": "IDU_COMMUNE", "target": "commune_id", "prefix_dep": true }
+    ]
+  },
+  "PARCELLE_id": {
+    "table": "edi_parcelles",
+    "hash_geom": true,
+    "fields": [
+      { "source": "IDU", "target": "id", "prefix_dep": true },
+      { "source": "TEX", "target": "numero" },
+      { "source": "IDU_COMMUNE", "target": "commune_id", "prefix_dep": true },
+      { "source": "IDU_SECTION", "target": "section_id", "prefix_dep": true },
+      { "source": "SUPF", "target": "contenance", "data_type": "integer" },
+      { "source": "INDP", "target": "indp", "data_type": "integer" }
+    ]
+  },
+  "BATIMENT_id": {
+    "table": "edi_batiments",
+    "hash_geom": true,
+    "fields": [
+      { "source": "IDU", "target": "id", "prefix_dep": true },
+      { "source": "DUR", "target": "dur", "data_type": "integer" },
+      { "source": "IDU_COMMUNE", "target": "commune_id", "prefix_dep": true }
+    ]
+  },
+  "SUBDFISC_id": {
+    "table": "edi_subdivisions_fiscales",
+    "hash_geom": true,
+    "fields": [
+      { "source": "IDU", "target": "id", "prefix_dep": true },
+      { "source": "TEX", "target": "lettre" },
+      { "source": "IDU_COMMUNE", "target": "commune_id", "prefix_dep": true }
+    ]
+  },
+  "TSURF_id": {
+    "table": "edi_tsurf",
+    "hash_geom": true,
+    "fields": [
+      { "source": "IDU", "target": "id", "prefix_dep": true },
+      { "source": "SYM", "target": "sym", "data_type": "integer" },
+      { "source": "IDU_COMMUNE", "target": "commune_id", "prefix_dep": true }
+    ]
+  },
+  "TLINE_id": {
+    "table": "edi_tline",
+    "hash_geom": true,
+    "fields": [
+      { "source": "IDU", "target": "id", "prefix_dep": true },
+      { "source": "SYM", "target": "sym", "data_type": "integer" },
+      { "source": "IDU_COMMUNE", "target": "commune_id", "prefix_dep": true }
+    ]
+  },
+  "TPOINT_id": {
+    "table": "edi_tpoint",
+    "hash_geom": true,
+    "fields": [
+      { "source": "IDU", "target": "id", "prefix_dep": true },
+      { "source": "SYM", "target": "sym", "data_type": "integer" },
+      { "source": "ORI", "target": "ori", "data_type": "integer" },
+      { "source": "IDU_COMMUNE", "target": "commune_id", "prefix_dep": true }
+    ]
+  },
+  "NUMVOIE_id": {
+    "table": "edi_numvoie",
+    "hash_geom": true,
+    "fields": [
+      { "source": "IDU", "target": "id", "prefix_dep": true },
+      { "source": "TEX", "target": "numero" },
+      { "source": "IDU_COMMUNE", "target": "commune_id", "prefix_dep": true }
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+[package]
+name = "edigeo"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Parser for EDIGEO format (French cadastral data - AFNOR NF Z 52000)"
+readme = "README.md"
+keywords = ["edigeo", "cadastre", "gis", "geospatial", "france"]
+categories = ["parser-implementations", "science::geo"]
+
+[dependencies]
+geo.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+memchr.workspace = true
+simdutf8.workspace = true
+bzip2.workspace = true
+tar.workspace = true
+encoding_rs.workspace = true
+fast-float.workspace = true
+
+[dev-dependencies]
+criterion.workspace = true
+glob.workspace = true
+walkdir = "2"
+rayon = "1"
+
+[[bench]]
+name = "parsing"
+harness = false
