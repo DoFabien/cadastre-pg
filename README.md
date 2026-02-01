@@ -15,8 +15,20 @@ Outil Rust performant pour importer le cadastre EDIGEO vers PostGIS avec support
 
 ## Installation
 
+### Téléchargement
+
+Des binaires précompilés sont disponibles dans les [Releases](../../releases) pour Linux, macOS et Windows.
+
+> **Note** : Les binaires précompilés n'incluent pas la reprojection (feature `proj`). Pour l'activer, compilez depuis les sources.
+
+### Compilation depuis les sources
+
 ```sh
+# Sans reprojection
 cargo build --release
+
+# Avec reprojection (nécessite libproj)
+cargo build --release --features reproject
 ```
 
 Le binaire sera disponible dans `target/release/cadastre-pg`.
