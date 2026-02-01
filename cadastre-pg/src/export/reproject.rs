@@ -231,3 +231,35 @@ mod tests {
 pub fn is_available() -> bool {
     cfg!(feature = "reproject")
 }
+
+// Implémentation factice quand le feature reproject est désactivé
+#[cfg(not(feature = "reproject"))]
+use anyhow::{bail, Result};
+#[cfg(not(feature = "reproject"))]
+use geo::Geometry;
+
+/// Reprojector factice - pas de reprojection disponible
+#[cfg(not(feature = "reproject"))]
+pub struct Reprojector;
+
+#[cfg(not(feature = "reproject"))]
+impl Reprojector {
+    /// Tente de créer un reprojector - échoue toujours sans la feature
+    pub fn new(source_epsg: u32, target_epsg: u32) -> Result<Self> {
+        if source_epsg == target_epsg {
+            Ok(Self)
+        } else {
+            bail!(
+                "Reprojection from EPSG:{} to EPSG:{} requires the 'reproject' feature. \
+                 Build with: cargo build --features reproject",
+                source_epsg,
+                target_epsg
+            )
+        }
+    }
+
+    /// Retourne la géométrie inchangée (pas de reprojection)
+    pub fn transform_geometry(&self, geom: &Geometry) -> Result<Geometry> {
+        Ok(geom.clone())
+    }
+}
