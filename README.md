@@ -19,7 +19,7 @@ Outil Rust performant pour importer le cadastre EDIGEO vers PostGIS avec support
 
 Des binaires précompilés sont disponibles dans les [Releases](../../releases) pour Linux, macOS et Windows.
 
-> **Note** : Les binaires Windows n'incluent pas la reprojection. Les binaires Linux et macOS supportent la reprojection.
+> **Note** : Le binaire Windows n'inclut pas la reprojection (PROJ difficile à builder). Linux et macOS ARM ont la reprojection. Pour Windows avec reprojection, compilez depuis les sources avec PROJ installé.
 
 ### Compilation depuis les sources
 
