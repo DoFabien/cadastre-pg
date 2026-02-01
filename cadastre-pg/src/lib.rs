@@ -28,5 +28,5 @@ pub mod versioning;
 
 pub use config::Config;
 pub use export::pool::{create_pool, DatabaseConfig};
-pub use reproject_lite::ReprojectorLite;
+pub use reproject_lite::{ReprojectorLite, SmartReprojector};
 pub use report::{ImportReport, ImportStatus};

@@ -14,7 +14,10 @@
 mod ellipsoid;
 mod lambert;
 mod mercator;
+mod smart;
 mod utm;
+
+pub use smart::SmartReprojector;
 
 use anyhow::{bail, Result};
 use geo::{Coord, Geometry, LineString, MultiLineString, MultiPoint, MultiPolygon, Point, Polygon};

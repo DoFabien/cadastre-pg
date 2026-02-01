@@ -21,6 +21,7 @@ fn load_env() {
 mod cli;
 mod config;
 mod export;
+mod reproject_lite;
 mod versioning;
 
 use cli::{Commands, PostgisArgs};

@@ -4,7 +4,7 @@
 //! - `import`: EDIGEO → PostGIS avec versioning
 //! - `export`: EDIGEO → GeoJSON (sans DB)
 
-use crate::export::reproject::Reprojector;
+use crate::reproject_lite::SmartReprojector;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicUsize, Ordering};
@@ -392,7 +392,7 @@ pub async fn cmd_import(
                 let epsg = result.projection.epsg;
                 let ewkt_prefix = format!("SRID={};", srid).into_bytes();
 
-                let reprojector = match Reprojector::new(epsg, srid) {
+                let reprojector = match SmartReprojector::new(epsg, srid) {
                     Ok(r) => r,
                     Err(e) => {
                         warn!("Failed to build reprojector ({} → {}): {}", epsg, srid, e);
@@ -1129,7 +1129,7 @@ fn export_single_archive(path: &Path, output: &Path, target_srid: Option<u32>) -
     #[cfg(feature = "reproject")]
     let reprojector = target_srid
         .filter(|&srid| srid != parse_result.projection.epsg)
-        .map(|srid| crate::export::reproject::Reprojector::new(parse_result.projection.epsg, srid))
+        .map(|srid| SmartReprojector::new(parse_result.projection.epsg, srid))
         .transpose()?;
 
     let output_epsg = target_srid.unwrap_or(parse_result.projection.epsg);
@@ -1259,7 +1259,7 @@ fn process_archive_for_export(
     #[cfg(feature = "reproject")]
     let reprojector = target_srid
         .filter(|&srid| srid != parse_result.projection.epsg)
-        .map(|srid| crate::export::reproject::Reprojector::new(parse_result.projection.epsg, srid))
+        .map(|srid| SmartReprojector::new(parse_result.projection.epsg, srid))
         .transpose()?;
 
     let output_epsg = target_srid.unwrap_or(parse_result.projection.epsg);

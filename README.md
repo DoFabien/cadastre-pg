@@ -6,9 +6,10 @@ Outil Rust performant pour importer le cadastre EDIGEO vers PostGIS avec support
 
 ## Fonctionnalités
 
-- Import EDIGEO → PostGIS avec reprojection à la volée
+- Export EDIGEO → PostGIS ou GeoJSON avec reprojection à la volée
+- **Reprojection légère** (pure Rust, sans dépendances) : Lambert 93, UTM DOM → WGS84/Web Mercator
 - **Versioning temporel** : champs `valid_from` / `valid_to` pour suivre l'historique
-- **Import incrémental** : skip des archives inchangées (checksum blake3)
+- **Export incrémental** : skip des archives inchangées (checksum blake3)
 - **Déduplication** : skip des features identiques (hash géométrie normalisé)
 - Configuration flexible via presets (`full` / `light` / `bati`) ou fichier JSON
 - Parallélisation multi-thread avec rayon/tokio
@@ -33,7 +34,7 @@ curl -L https://github.com/DoFabien/cadastre-pg/releases/latest/download/cadastr
 
 Télécharger le `.zip` depuis les [Releases](../../releases) et extraire `cadastre-pg.exe`.
 
-> **Note** : Le binaire Windows n'inclut pas la reprojection. Linux et macOS ARM ont la reprojection.
+> Tous les binaires incluent la reprojection légère (pure Rust) pour les projections cadastrales françaises.
 
 ### Compilation depuis les sources
 
